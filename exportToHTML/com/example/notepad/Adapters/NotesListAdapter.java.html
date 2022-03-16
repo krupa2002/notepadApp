@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>NotesListAdapter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+NotesListAdapter.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.notepad.Adapters</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.cardview.widget.CardView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.example.notepad.Models.Notes</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.notepad.NotesClickListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.notepad.R</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Random</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">NotesListAdapter </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter&lt;NotesViewHolder&gt;{</span>
+    <span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s1">List&lt;Notes&gt; list</span><span class="s0">;</span>
+    <span class="s1">NotesClickListener listener</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">NotesListAdapter(Context context</span><span class="s0">, </span><span class="s1">List&lt;Notes&gt; list</span><span class="s0">, </span><span class="s1">NotesClickListener listener) {</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.list = list</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.listener = listener</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s0">return new </span><span class="s1">NotesViewHolder(LayoutInflater.from(context).inflate(R.layout.notes_list</span><span class="s0">, </span><span class="s1">parent</span><span class="s0">, false</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@RequiresApi(api = Build.VERSION_CODES.M)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull NotesViewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+        <span class="s1">holder.textView_title.setText(list.get(position).getTitle())</span><span class="s0">;</span>
+        <span class="s1">holder.textView_title.setSelected(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">holder.textview_notes.setText(list.get(position).getNotes())</span><span class="s0">;</span>
+
+        <span class="s1">holder.textview_date.setText(list.get(position).getDate())</span><span class="s0">;</span>
+        <span class="s1">holder.textview_date.setSelected(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(list.get(position).isPinned()){</span>
+            <span class="s1">holder.imageView_pin.setImageResource(R.drawable.pin1)</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+        <span class="s0">else</span><span class="s1">{</span>
+            <span class="s1">holder.imageView_pin.setImageResource(</span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">int </span><span class="s1">color_code = getRandomColor()</span><span class="s0">;</span>
+        <span class="s1">holder.notes_container.setCardBackgroundColor(holder.itemView.getResources().getColor(color_code</span><span class="s0">,null</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">holder.notes_container.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">listener.onClick(list.get(holder.getAdapterPosition()))</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">holder.notes_container.setOnLongClickListener(</span><span class="s0">new </span><span class="s1">View.OnLongClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public boolean </span><span class="s1">onLongClick(View view) {</span>
+                <span class="s1">listener.onLongClick(list.get(holder.getAdapterPosition())</span><span class="s0">, </span><span class="s1">holder.notes_container)</span><span class="s0">;</span>
+                <span class="s0">return true;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private int </span><span class="s1">getRandomColor(){</span>
+        <span class="s1">List&lt;Integer&gt; colorCode = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+
+        <span class="s1">colorCode.add(R.color.color1)</span><span class="s0">;</span>
+        <span class="s1">colorCode.add(R.color.color2)</span><span class="s0">;</span>
+        <span class="s1">colorCode.add(R.color.color3)</span><span class="s0">;</span>
+        <span class="s1">colorCode.add(R.color.color4)</span><span class="s0">;</span>
+        <span class="s1">colorCode.add(R.color.color5)</span><span class="s0">;</span>
+
+        <span class="s1">Random random = </span><span class="s0">new </span><span class="s1">Random()</span><span class="s0">;</span>
+        <span class="s0">int </span><span class="s1">random_color = random.nextInt(colorCode.size())</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">colorCode.get(random_color)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">return </span><span class="s1">list.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s0">public void </span><span class="s1">filterList(List&lt;Notes&gt; filteredList){</span>
+        <span class="s1">list = filteredList</span><span class="s0">;</span>
+        <span class="s1">notifyDataSetChanged()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+<span class="s0">class </span><span class="s1">NotesViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder {</span>
+    <span class="s1">CardView notes_container</span><span class="s0">;</span>
+    <span class="s1">TextView textView_title</span><span class="s0">, </span><span class="s1">textview_notes</span><span class="s0">, </span><span class="s1">textview_date</span><span class="s0">;</span>
+    <span class="s1">ImageView imageView_pin</span><span class="s0">;</span>
+
+
+    <span class="s0">public </span><span class="s1">NotesViewHolder(@NonNull View itemView) {</span>
+        <span class="s0">super</span><span class="s1">(itemView)</span><span class="s0">;</span>
+
+        <span class="s1">notes_container = itemView.findViewById(R.id.notes_container)</span><span class="s0">;</span>
+        <span class="s1">textView_title = itemView.findViewById(R.id.textView_title)</span><span class="s0">;</span>
+        <span class="s1">textview_notes = itemView.findViewById(R.id.textview_notes)</span><span class="s0">;</span>
+        <span class="s1">textview_date = itemView.findViewById(R.id.textview_date)</span><span class="s0">;</span>
+        <span class="s1">imageView_pin = itemView.findViewById(R.id.imageView_pin)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
